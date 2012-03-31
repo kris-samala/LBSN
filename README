@@ -1,0 +1,6 @@
+This project contains Python scripts for studying Location Based Social Networks and disease simulation.
+
+Description of files:
+
+split_data.py : parses raw gowalla data to extract desired fields
+#python split_data.py [gowalla_raw] [output]

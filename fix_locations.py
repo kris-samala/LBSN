@@ -4,7 +4,7 @@ import pickle
 import math
 import operator
 
-#python fix_locations.py location_data_raw.in census.p city_coordinates.p location_data.in
+#python fix_locations.py location_data.raw census.p city_coordinates.p fixed_locations.in
 
 census = pickle.load(open(sys.argv[2], 'rb'))
 city_coords = pickle.load(open(sys.argv[3], 'rb'))

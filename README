@@ -9,5 +9,9 @@ fix_locations.py : fixes location info from citydata (census/coord)
     - outputs not_found.out for unfound cities
 #python fix_locations.py location_data.raw census.p city_coordinates.p fixed_locations.in
 
+fix_time.py : fixes timestamps to standard Eastern timezone
+#python fix_time.py fixed_locations.in timezones.in fixed_time.in
+
 citydata/ : directory contains raw data for census, city coordinates, parser
 for raw files and pickled data
+    **TODO: need to update raw census data, check mismatch with city_coord

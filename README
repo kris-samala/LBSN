@@ -15,3 +15,17 @@ fix_time.py : fixes timestamps to standard Eastern timezone
 citydata/ : directory contains raw data for census, city coordinates, parser
 for raw files and pickled data
     **TODO: need to update raw census data, check mismatch with city_coord
+
+datadist_analysis.py : extracts info about checkins
+    - time_diff, distance, year09, year10, freq
+#python datadist_analysis.py location_data.in data_info.out
+
+distance_time.py
+checkins_time.py
+calc_speed.py
+    - extracts info from data_info.out
+    - time_diff, distance, total_checkins, total_time, speed
+
+chartmaker/ : directory contains scripts for producing charts
+
+

@@ -15,5 +15,5 @@ for i in range(len(distance)):
         speed.append(distance[i] / time[i])
 #        sdist.append(distance[i])
 
-pickle.dump(speed, open('full/speed.p', 'wb'))
-#pickle.dump(sdist, open('full/sdist.p', 'wb'))
+pickle.dump(speed, open('out/speed.p', 'wb'))
+#pickle.dump(sdist, open('out/sdist.p', 'wb'))

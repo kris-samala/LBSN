@@ -4,3 +4,10 @@ Description of files:
 
 split_data.py : parses raw gowalla data to extract desired fields
 #python split_data.py [gowalla_raw] [output]
+
+fix_locations.py : fixes location info from citydata (census/coord)
+    - outputs not_found.out for unfound cities
+#python fix_locations.py location_data.raw census.p city_coordinates.p fixed_locations.in
+
+citydata/ : directory contains raw data for census, city coordinates, parser
+for raw files and pickled data

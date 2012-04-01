@@ -19,9 +19,9 @@ for l in fileinput.input(sys.argv[1]):
     line = l.split('\t')
     user = line[7].rstrip()
     if user in freq:
-        removed.write(line)
+        removed.write(l)
     else:
-        out.write(line)
+        out.write(l)
 
 out.close()
 removed.close()

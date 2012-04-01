@@ -23,9 +23,12 @@ datadist_analysis.py : extracts info about checkins
 distance_time.py
 checkins_time.py
 calc_speed.py
+calc_timespeed.py
     - extracts info from data_info.out
     - time_diff, distance, total_checkins, total_time, speed
 
 chartmaker/ : directory contains scripts for producing charts
 
+remove_freq.py : remove freq/problem users
+#python remove_freq.py [location_data] freq.out fixed_freq.in removed.out
 

@@ -12,7 +12,7 @@ sdist = []
 
 for i in range(len(distance)):
     if time[i] > 0:
-        speed.append(distance[i] / time[i])
+        speed.append(distance[i] / (time[i] * 24))
 #        sdist.append(distance[i])
 
 pickle.dump(speed, open('out/speed.p', 'wb'))

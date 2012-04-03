@@ -4,9 +4,10 @@ import operator
 import pickle
 import time
 
-#python user_list.py location_data.in out/user_checkins.out
+#python user_list.py location_data.in out/user_checkins.out out/austin.out
 
 users = {}
+austin = {}
 fmt = "%Y-%m-%d %H:%M:%S"
 
 if len(sys.argv) < 2:
@@ -29,6 +30,20 @@ else:
         sorted_checkins = sorted(checkins, key=operator.itemgetter(1))
         users[u] = sorted_checkins
 
+    #find Austin-ers
+    for u in users:
+        checkins = users[u]
+        count = 0
+        for city,date in checkins:
+            if city == "Austin,TX":
+                count += 1
+        percent = count/float(len(checkins))
+        if percent >= .5:
+            austin[u] = checkins
+    #remove Austin-ers from original user list
+    for u in austin:
+        del users[u]
+
 
     checkin_list = open(sys.argv[2], 'w')
 
@@ -40,6 +55,18 @@ else:
         checkin_list.write(out + "\n")
 
     checkin_list.close()
+
+    austin_list = open(sys.argv[3], 'w')
+
+    for user in austin:
+        out = user
+        checkins = austin[user]
+        for loc,date in checkins:
+            out += "|" + loc + ">" + time.strftime(fmt, date)
+        austin_list.write(out + "\n")
+
+    austin_list.close()
+
 
 #    pickle.dump(users, open("out/users.p", "wb"))
 

@@ -10,12 +10,17 @@ class LocationGraph:
     def add_vertex(self, name):
         self.graph.add_node(name)
 
-    def add_edge(self, node1, node2):
+    def add_edge(self, node1, node2, w=1):
         if node1 != None:
             if self.graph.has_edge(node1, node2):
-                self.graph[node1][node2]['weight'] += 1
+                self.graph[node1][node2]['weight'] += w
             else:
-                self.graph.add_edge(node1, node2, weight = 1)
+                self.graph.add_edge(node1, node2, weight = w)
+
+    def make_connected(self, w):
+        for node1 in self.graph.nodes():
+            for node2 in self.graph.nodes():
+                self.add_edge(node1, node2, w)
 
     def set_coord(self, node, latd, longd):
         self.graph.add_node(node, latitude = latd, longitude = longd)

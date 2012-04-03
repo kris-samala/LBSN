@@ -42,20 +42,23 @@ loc_stats.py : extracts city based info
 user_list.py : extracts user checkin history
     - user_checkins.out : maps user to list of (city, date) checkins sorted
       chronologically
-#python user_list.py location_data.in user_checkins.out
+    - finds and separates Austin users
+#python user_list.py location_data.in user_checkins.out austin.out
 
 build_network.py : constructs location-based network from user checkin history
-    ***TODO: initialize epsilon edge weight for every location node
-    *******: find and fix Austin walkers
     - uses LocationGraph from locations.py
     - parses user_checkins.out to rebuild user checkin history
     - for each user, traverse history, add edge from one city to the next
     - for every city node created, set coordinates from coordinates.p
+    - for each Austin walker, set edge weights as .5
+    - add epsilon (5) weight between all pairs of city nodes
     - save network as gowalla_net
     - outputs network info
-#python build_network.py user_checkins.out coordinates.p gowalla_net
+#python build_network.py user_checkins.out austin.out coordinates.p gowalla_net
 
 locations.py : LocationGraph data structure uses networkx, directed graph
 
 simulations.py : executes disease simulation
 #python simulation.py [time_steps] [init_n] [n] [prob] locations.p census.p gowalla_net sim.out
+
+

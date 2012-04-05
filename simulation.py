@@ -2,31 +2,33 @@ import sys
 import random
 import pickle
 from locations import LocationGraph
-#import matplotlib
-#matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
-#python simulation.py [time_steps] [init_n] [n] [prob] out/locations.p citydata/census.p out/gowalla_net out/sim.out
+#python simulation.py [time_steps] [init_n] [n] [prob] locations.p census.p gowalla_net sim.out
 
 time_steps = int(sys.argv[1])
 init_n = int(sys.argv[2])
-n = int(sys.argv[3])
+n = int(sys.argv[3]) # not being used currently
 prob = float(sys.argv[4])
 
-locations=pickle.load(open(sys.argv[5], 'rb'))
+locations=pickle.load(open("out/" + sys.argv[5], 'rb'))
 #need to update with actual census data
 population = {}
-census = pickle.load(open(sys.argv[6], 'rb'))
+census = pickle.load(open("out/" + sys.argv[6], 'rb'))
 total_pop = 0
 for p in census:
     total_pop += census[p]
 
 for p in census:
-    population[p] = int ((census[p] / float(total_pop)) * n)
+    population[p] = (census[p] / float(total_pop)) * n
+
+#print population
 
 network = LocationGraph()
-network.load(sys.argv[7])
+network.load("out/"+sys.argv[7])
 print "Dictionaries loaded."
 
 countID = 0
@@ -78,7 +80,7 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p):
-    gamma = np.random.gamma(1, 2.0) / 100
+    gamma = np.random.gamma(1, 2.0)
     pop = population[city]
     num = int(pop * gamma)
     new_infected = {}
@@ -86,6 +88,7 @@ def infect_city(city, p):
         if infect_indiv(p):
             new_infected[genID()] = (city, 3)
             population[city] -= 1
+
     return new_infected
 
 def spread(infected):
@@ -109,7 +112,7 @@ def spread(infected):
     return infected
 
 
-results = open(sys.argv[8], 'w')
+results = open("out/"+sys.argv[8], 'w')
 time_step = 0
 
 while time_step <= time_steps:

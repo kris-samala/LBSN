@@ -101,7 +101,7 @@ else:
                 if time_d > 0:
                     speed = dist / (time_d * 24)
                 else:
-                    speed = dist / (.00001 * 24)
+                    speed = dist
                 if speed > 600:
                     if user not in frequent:
                         frequent[user] = []

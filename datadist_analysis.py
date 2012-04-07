@@ -86,7 +86,7 @@ else:
         users[u] = sorted_checkins
 
 
-    checkin_list = open("out/"+sys.argv[2], 'w')
+    checkin_list = open(sys.argv[2], 'w')
 
     mindate = maxdate = None
     for user in users:

@@ -30,16 +30,46 @@ else:
         sorted_checkins = sorted(checkins, key=operator.itemgetter(1))
         users[u] = sorted_checkins
 
+    columbus = sanfo = jacksonville = indianapolis = 0
+
     #find Austin-ers
     for u in users:
         checkins = users[u]
-        count = 0
+        austin_count = 0
+        coh = sfo = jfl = iin = 0
         for city,date in checkins:
             if city == "Austin,TX":
-                count += 1
-        percent = count/float(len(checkins))
-        if percent >= .5:
+                austin_count += 1
+            if city == "Columbus,OH":
+                coh += 1
+            if city == "San Francisco,CA":
+                sfo += 1
+            if city == "Jacksonville,FL":
+                jfl += 1
+            if city == "Indianapolis,IN":
+                iin += 1
+        a_percent = austin_count/float(len(checkins))
+        if a_percent >= .5:
             austin[u] = checkins
+        c_percent = coh/float(len(checkins))
+        if c_percent >= .5:
+            columbus += 1
+        s_percent = sfo/float(len(checkins))
+        if s_percent >= .5:
+            sanfo += 1
+        j_percent = jfl/float(len(checkins))
+        if j_percent >= .5:
+            jacksonville += 1
+        i_percent = iin/float(len(checkins))
+        if i_percent >= .5:
+            indianapolis += 1
+
+    print "Austin: " + str(len(austin))
+    print "Columbus: " + str(columbus)
+    print "San Francisco: " + str(sanfo)
+    print "Jacksonville: " + str(jacksonville)
+    print "Indianapolis: " + str(indianapolis)
+
     #remove Austin-ers from original user list
     for u in austin:
         del users[u]

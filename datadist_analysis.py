@@ -97,7 +97,11 @@ else:
             if prevloc is not None and prevdate is not None:
                 dist = distance(prevloc, loc)
                 time_d = time(prevdate, date)
-                speed = dist / (time_d * 24)
+                speed = 0
+                if time_d > 0:
+                    speed = dist / (time_d * 24)
+                else
+                    speed = dist / (.00001 * 24)
                 if speed > 600:
                     if user not in frequent:
                         frequent[user] = []

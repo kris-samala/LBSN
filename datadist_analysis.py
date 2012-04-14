@@ -86,7 +86,7 @@ else:
         users[u] = sorted_checkins
 
 
-    checkin_list = open(sys.argv[2], 'w')
+    checkin_list = open("out/"+sys.argv[2], 'w')
 
     mindate = maxdate = None
     for user in users:
@@ -97,12 +97,7 @@ else:
             if prevloc is not None and prevdate is not None:
                 dist = distance(prevloc, loc)
                 time_d = time(prevdate, date)
-                speed = 0
-                if time_d > 0:
-                    speed = dist / (time_d * 24)
-                else:
-                    speed = dist
-                if speed > 600:
+                if time_d < .04 and dist > 600:
                     if user not in frequent:
                         frequent[user] = []
                     times = frequent[user]

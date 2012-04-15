@@ -1,23 +1,26 @@
 import sys
 import random
 import pickle
+import math
 from locations import LocationGraph
-import matplotlib
-matplotlib.use('Agg')
+#import matplotlib
+#matplotlib.use('Agg')
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
-#python simulation.py [time_steps] [init_n] [n] [prob] locations.p census.p gowalla_net sim.out
+#python simulation.py [time_steps] [init_n] [n] [prob] [gamma] [sine] locations.p census.p gowalla_net sim.out
 
 time_steps = int(sys.argv[1])
 init_n = int(sys.argv[2])
 n = int(sys.argv[3]) # not being used currently
 prob = float(sys.argv[4])
+theta = float(sys.argv[5])
+omega = float(sys.argv[6])
 
-locations=pickle.load(open("out/" + sys.argv[5], 'rb'))
+locations=pickle.load(open(sys.argv[7], 'rb'))
 #need to update with actual census data
 population = {}
-census = pickle.load(open("out/" + sys.argv[6], 'rb'))
+census = pickle.load(open(sys.argv[8], 'rb'))
 total_pop = 0
 for p in census:
     total_pop += census[p]
@@ -28,7 +31,7 @@ for p in census:
 #print population
 
 network = LocationGraph()
-network.load("out/"+sys.argv[7])
+network.load(sys.argv[9])
 print "Dictionaries loaded."
 
 countID = 0
@@ -51,6 +54,9 @@ def prob_index(probs):
 
     print >> sys.stderr, "Error in prob_index"
 
+def seasonal_prob(p, t):
+    return p * math.sin(omega*t)
+
 
 #choose random location for each user
 for i in range(init_n):
@@ -64,10 +70,10 @@ def next_city(ID):
     poss_loc = network.neighbors(curr_loc)
     if len(poss_loc) > 0:
         probs = []  # edge or node weight divided by total weights
+        poss_loc.append(curr_loc)
         for l in poss_loc:
             p = network.edge_weight(curr_loc, l) / sum_weight
             probs.append(p)
-        poss_loc.append(curr_loc)
 
         #determine location to infect
         index = prob_index(probs)
@@ -80,7 +86,7 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p):
-    gamma = np.random.gamma(1, 2.0)
+    gamma = np.random.gamma(1, theta)
     pop = population[city]
     num = int(pop * gamma)
     new_infected = {}
@@ -91,12 +97,13 @@ def infect_city(city, p):
 
     return new_infected
 
-def spread(infected):
+def spread(infected, t):
     new = {}
     remove = []
+    sp = seasonal_prob(prob, t)
     for ID in infected:
         curr_loc, t = infected[ID]
-        new.update(infect_city(curr_loc, prob))
+        new.update(infect_city(curr_loc, sp))
         curr_loc = next_city(ID)
         t -= 1
         if t > 0:
@@ -112,7 +119,21 @@ def spread(infected):
     return infected
 
 
-results = open("out/"+sys.argv[8], 'w')
+def stateStats(time_step):
+    inf = {}
+
+    for id in infected:
+        loc,t = infected[id]
+        loc = loc.split(',')
+        state = loc[1]
+        if state in inf:
+            inf[state] += 1
+        else:
+            inf[state] = 1
+
+    pickle.dump(inf, open("maps/flu"+str(time_step), 'wb'))
+
+results = open(sys.argv[10], 'w')
 time_step = 0
 
 while time_step <= time_steps:
@@ -122,7 +143,8 @@ while time_step <= time_steps:
         results.write(str(id) + str(infected[id]) + '\n')
 
     time_step += 1
-    infected = spread(infected)
+    infected = spread(infected, time_step)
+    stateStats(time_step)
 
 results.close()
 

@@ -14,8 +14,8 @@ out = sys.argv[4]
 Gowalla = LocationGraph()
 fmt = "%Y-%m-%d %H:%M:%S"
 
-austin_weight = .5
-epsilon = 5
+austin_weight = .24
+epsilon = 1
 
 if len(sys.argv) < 2:
     print "Filename required"

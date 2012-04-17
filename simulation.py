@@ -157,6 +157,7 @@ while time_step <= time_steps:
     infected = spread(infected, time_step)
 
 results.close()
+maps.close()
 
 #width = .5
 #ind = [i for i in range(1, 10 + 1)]

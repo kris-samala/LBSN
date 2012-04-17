@@ -137,12 +137,12 @@ def stateStats(time_step, out):
 
 
 
-params = str(prob) + "-" + str(theta) + "-" + str(omega) + "\n"
+params = str(prob) + "-" + str(theta) + "-" + str(omega)
 
-results = open(sys.argv[10]+"_"+params, 'w')
-results.write("Simulation Parameters: " + str(init_n) + "-" + str(n) + "-" + params)
+results = open(sys.argv[10]+"_"+params+".out", 'w')
+results.write("Simulation Parameters: " + str(init_n) + "-" + str(n) + "-" + params + "\n")
 
-maps = open(sys.argv[11]+"_"+params, 'w')
+maps = open(sys.argv[11]+"_"+params+".out", 'w')
 
 time_step = 0
 

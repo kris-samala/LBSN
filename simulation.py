@@ -131,9 +131,9 @@ def stateStats(time_step, out):
         else:
             inf[state] = 1
 
-    out.write("Time Step: " + str(time_step) + "\n")
     for state in inf:
-        out.write(state + ":" + str(inf[state]) + "\n")
+        out.write(state + ":" + str(inf[state]) + ",")
+    out.write("\n")
 
 
 
@@ -147,6 +147,7 @@ maps = open(sys.argv[11]+"_"+params+".out", 'w')
 time_step = 0
 
 while time_step <= time_steps:
+    print len(infected)
     results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
     for id in infected:
         results.write(str(id) + str(infected[id]) + '\n')

@@ -1,5 +1,5 @@
 import networkx as nx
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import pickle
 
 class LocationGraph:
@@ -77,9 +77,9 @@ class LocationGraph:
     def load(self, filename):
         self.graph = nx.read_gpickle(filename + ".gpickle")
 
-    def draw(self, filename):
-        nx.draw(self.graph,node_size=20,alpha=.5,with_labels=False,node_color='g',width=.3)
-        plt.savefig(filename + ".png")
+#    def draw(self, filename):
+#        nx.draw(self.graph,node_size=20,alpha=.5,with_labels=False,node_color='g',width=.3)
+#        plt.savefig(filename + ".png")
 
     def write(self, filename):
         out = open(filename, 'w')

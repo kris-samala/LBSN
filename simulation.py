@@ -149,12 +149,12 @@ time_step = 0
 while time_step <= time_steps:
     print len(infected)
     results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
+    stateStats(time_step, maps)
     for id in infected:
         results.write(str(id) + str(infected[id]) + '\n')
 
     time_step += 1
     infected = spread(infected, time_step)
-    stateStats(time_step, maps)
 
 results.close()
 

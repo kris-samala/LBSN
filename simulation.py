@@ -8,7 +8,7 @@ from locations import LocationGraph
 import numpy as np
 #import matplotlib.pyplot as plt
 
-#python simulation.py [time_steps] [init_n] [n] [prob] [gamma] [sine] locations.p census.p gowalla_net sim.out
+#python simulation.py [time_steps] [init_n] [n] [prob] [gamma] [sine] locations.p census.p gowalla_net sim.out map.out
 
 time_steps = int(sys.argv[1])
 init_n = int(sys.argv[2])
@@ -86,7 +86,7 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p):
-    gamma = np.random.gamma(1, theta)
+    gamma = np.random.gamma(1, theta) / 100.0
     pop = population[city]
     num = int(pop * gamma)
     new_infected = {}
@@ -119,7 +119,7 @@ def spread(infected, t):
     return infected
 
 
-def stateStats(time_step):
+def stateStats(time_step, out):
     inf = {}
 
     for id in infected:
@@ -131,20 +131,29 @@ def stateStats(time_step):
         else:
             inf[state] = 1
 
-    pickle.dump(inf, open("maps/flu"+str(time_step), 'wb'))
+    out.write("Time Step: " + str(time_step) + "\n")
+    for state in inf:
+        out.write(state + ":" + str(inf[state]) + "\n")
 
-results = open(sys.argv[10], 'w')
+
+
+params = str(prob) + "-" + str(theta) + "-" + str(omega) + "\n"
+
+results = open(sys.argv[10]+"_"+params, 'w')
+results.write("Simulation Parameters: " + str(init_n) + "-" + str(n) + "-" + params)
+
+maps = open(sys.argv[11]+"_"+params, 'w')
+
 time_step = 0
 
 while time_step <= time_steps:
-    print len(infected)
-    results.write("Time step: " + str(time_step) + "\n")
+    results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
     for id in infected:
         results.write(str(id) + str(infected[id]) + '\n')
 
     time_step += 1
     infected = spread(infected, time_step)
-    stateStats(time_step)
+    stateStats(time_step, maps)
 
 results.close()
 

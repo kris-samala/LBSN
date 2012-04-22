@@ -8,26 +8,24 @@ from locations import LocationGraph
 import numpy as np
 #import matplotlib.pyplot as plt
 
-#python simulation.py [n] [prob] [shape] [scale] states.p census.p gowalla_net matrix.out
+#python simulation.py [time_steps] [init_n] [n] [prob] [shape] [scale] locations.p states.p census.p gowalla_net matrix.out
 
 #sim.out map.out matrix.out
 
-#time_steps = int(sys.argv[1])
-#init_n = int(sys.argv[2])
-time_steps = 5
-n = int(sys.argv[1]) # not being used currently
-beta = float(sys.argv[2])
-shape = float(sys.argv[3])
-scale = float(sys.argv[4])
-max_inf = 10
-max_lat = 3
+time_steps = int(sys.argv[1])
+init_n = int(sys.argv[2])
+n = int(sys.argv[3]) # not being used currently
+beta = float(sys.argv[4])
+shape = float(sys.argv[5])
+scale = float(sys.argv[6])
+inf_len = 3
 #omega = float(sys.argv[6])
 
 #locations=pickle.load(open(sys.argv[7], 'rb'))
-states = pickle.load(open(sys.argv[5], 'rb'))
+states = pickle.load(open(sys.argv[8], 'rb'))
 #need to update with actual census data
 population = {}
-census = pickle.load(open(sys.argv[6], 'rb'))
+census = pickle.load(open(sys.argv[9], 'rb'))
 total_pop = 0
 for p in census:
     total_pop += census[p]
@@ -38,15 +36,14 @@ for p in census:
 #print population
 
 network = LocationGraph()
-network.load(sys.argv[7])
+network.load(sys.argv[10])
 print "Dictionaries loaded."
 
 params = str(beta) + "-" + str(shape) + "-" + str(scale)
-matrix = open(sys.argv[8]+"_"+params+".out", 'w')
+matrix = open(sys.argv[11]+"_"+params+".out", 'w')
 
 countID = 0
 infected = {}
-latent = {}
 recovered = []
 
 def genID():
@@ -72,30 +69,15 @@ def seasonal_prob(p, t):
     lamda = .55
     return p * ((1-a)+a*math.pow(math.fabs(math.sin(omega*t+phi)),lamda))
 
-def gen_latent(city, l):
-    length = random.randint(1, max_lat)
-    l[genID()] = (city, length)
-    population[city] -= 1
-
-    return l
-
-def init_city(city, l):
-    frac = .00001
-    num = int(frac * population[city])
-    print "ny pop " + str(population[city])
-    for i in range(num):
-        l.update(gen_latent(city, l))
-
-    return l
 
 #choose random location for each user
-#for i in range(init_n):
-#    city = random.choice(network.nodes())
-#    infected[genID()] = (city, inf_len)
-#    population[city] -= 1
+for i in range(init_n):
+    city = random.choice(network.nodes())
+    infected[genID()] = (city, inf_len)
+    population[city] -= 1
 
-def next_city(group, ID):
-    curr_loc, t = group[ID]
+def next_city(ID):
+    curr_loc, t = infected[ID]
     sum_weight = float(network.total_edge_weights(curr_loc))
     poss_loc = network.neighbors(curr_loc)
     if len(poss_loc) > 0:
@@ -115,45 +97,26 @@ def infect_indiv(p):
     rand = random.random()
     return rand <= p
 
-def infect_city(city, p, l):
+def infect_city(city, p):
     gamma = np.random.gamma(shape,scale) / 100.0
     pop = population[city]
     num = int(pop * gamma)
     new_infected = {}
     for i in range(num):
         if infect_indiv(p):
-            l.update(gen_latent(city, l))
+            new_infected[genID()] = (city, inf_len)
+            population[city] -= 1
 
-    return new_infected, l
+    return new_infected
 
-def update_latent(i, l):
-    remove = []
-    for ID in l:
-        curr_loc, t = l[ID]
-        curr_loc = next_city(l,ID)
-        t -= 1
-        if t > 0:
-            l[ID] = (curr_loc, t)
-        else:
-            remove.append(ID)
-
-    for ID in remove:
-        del l[ID]
-        length = random.randint(1, max_inf)
-        i[ID] = (curr_loc, length)
-
-    return i, l
-
-def spread(infected, l, t):
+def spread(infected, t):
     new = {}
     remove = []
     sp = seasonal_prob(beta, t)
     for ID in infected:
         curr_loc, t = infected[ID]
-        new_i, new_l = infect_city(curr_loc, sp, l)
-        new.update(new_i)
-        l.update(new_l)
-        curr_loc = next_city(infected, ID)
+        new.update(infect_city(curr_loc, sp))
+        curr_loc = next_city(ID)
         t -= 1
         if t > 0:
             infected[ID] = (curr_loc, t)
@@ -165,7 +128,7 @@ def spread(infected, l, t):
     for id in remove:
         del infected[id]
     infected.update(new)
-    return infected, l
+    return infected
 
 
 def stateStats(time_step):
@@ -198,10 +161,8 @@ def stateStats(time_step):
 time_step = 0
 infection_matrix = []
 
-latent = init_city("Chicago,IL", latent)
 while time_step < time_steps:
-    print "infected " + str(len(infected))
-    print "latent " + str(len(latent))
+    print len(infected)
 #    results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
 #    infection_matrix.append(stateStats(time_step, maps))
     infection_matrix.append(stateStats(time_step))
@@ -211,8 +172,7 @@ while time_step < time_steps:
     time_step += 1
     if time_step == time_steps:
         break
-    infected, latent = update_latent(infected, latent)
-    infected, latent = spread(infected, latent, time_step)
+    infected = spread(infected, time_step)
 
 #results.close()
 #maps.close()

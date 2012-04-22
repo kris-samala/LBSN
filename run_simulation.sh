@@ -1,10 +1,10 @@
 #!/bin/bash
 
 count=1
-for p in `seq 0.002 .002 .1`; do
-    for g in `seq .5 .5 3`; do
-        for s in `seq .1 .1 1`; do
-            ./runCmd -c "python simulation.py 52 1 500000 $p $g $s out/locations.p citydata/census.p out/gowalla_net results/sim$count results/map$count" -o results/out$count.txt -e results/out$count.err --nowait
+for p in `seq 0.001 .001 .001`; do
+    for k in `seq 1 1 1`; do
+        for s in `seq .1 .1 .1`; do
+            ./runCmd -c "python simulation.py 100000000 $p $k $s citydata/states.p citydata/census.p out/gowalla_net results/matrix$count" -e err/out$count.err --nowait
             let count+=1
         done
     done

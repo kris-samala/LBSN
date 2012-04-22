@@ -14,10 +14,10 @@ import numpy as np
 
 #time_steps = int(sys.argv[1])
 #init_n = int(sys.argv[2])
-time_steps = 5
+time_steps = 365
 n = int(sys.argv[1]) # not being used currently
 beta = float(sys.argv[2])
-shape = float(sys.argv[3])
+shape = int(sys.argv[3])
 scale = float(sys.argv[4])
 max_inf = 10
 max_lat = 3
@@ -82,7 +82,6 @@ def gen_latent(city, l):
 def init_city(city, l):
     frac = .00001
     num = int(frac * population[city])
-    print "ny pop " + str(population[city])
     for i in range(num):
         l.update(gen_latent(city, l))
 
@@ -116,7 +115,10 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p, l):
-    gamma = np.random.gamma(shape,scale) / 100.0
+    gamma = 1
+    while gamma >= 1:
+        gamma = np.random.gamma(shape,scale) / 100.0
+
     pop = population[city]
     num = int(pop * gamma)
     new_infected = {}
@@ -198,10 +200,8 @@ def stateStats(time_step):
 time_step = 0
 infection_matrix = []
 
-latent = init_city("Chicago,IL", latent)
+latent = init_city("New York,NY", latent)
 while time_step < time_steps:
-    print "infected " + str(len(infected))
-    print "latent " + str(len(latent))
 #    results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
 #    infection_matrix.append(stateStats(time_step, maps))
     infection_matrix.append(stateStats(time_step))

@@ -11,7 +11,7 @@ import numpy as np
 #python simulation.py [n] [prob] contact_dist.out states.p census.p trans_prob.csv city_list.p matrix.out
 
 #setup parameter values
-time_steps = 10
+time_steps = 180
 n = int(sys.argv[1])
 beta = float(sys.argv[2])
 max_inf = 10

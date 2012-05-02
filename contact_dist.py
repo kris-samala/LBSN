@@ -4,11 +4,12 @@ import operator
 import pickle
 from datetime import datetime
 
-#python contact_dist.py location_data.in
+#python contact_dist.py location_data.in out/contact_dist.out
 
 fmt = "%Y-%m-%d"
 days = {}
 contacts = []
+out = open(sys.argv[2], 'wb')
 
 if len(sys.argv) < 2:
     print "Filename required"
@@ -38,5 +39,6 @@ else:
             contacts.append(len(u))
 
     for c in contacts:
-        print c
+        out.write(str(c) + ",")
 
+out.close()

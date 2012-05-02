@@ -3,24 +3,32 @@ import random
 import pickle
 import math
 import csv
+import fileinput
 from locations import LocationGraph
 import numpy as np
 
 
-#python simulation.py [n] [prob] [shape] [scale] states.p census.p gowalla_net trans_prob.csv city_list.p matrix.out
+#python simulation.py [n] [prob] contact_dist.out states.p census.p trans_prob.csv city_list.p matrix.out
 
-
-time_steps = 180
+#setup parameter values
+time_steps = 10
 n = int(sys.argv[1])
 beta = float(sys.argv[2])
-shape = int(sys.argv[3])
-scale = float(sys.argv[4])
 max_inf = 10
 max_lat = 3
 
-states = pickle.load(open(sys.argv[5], 'rb'))
+#load contact distribution
+contacts = []
+for line in fileinput.input(sys.argv[3]):
+    line = line.rstrip(',').split(",")
+    line = [int(x) for x in line]
+    contacts.extend(line)
+
+states = pickle.load(open(sys.argv[4], 'rb'))
+
+#load census data
 population = {}
-census = pickle.load(open(sys.argv[6], 'rb'))
+census = pickle.load(open(sys.argv[5], 'rb'))
 total_pop = 0
 for p in census:
     total_pop += census[p]
@@ -28,24 +36,21 @@ for p in census:
 for p in census:
     population[p] = (census[p] / float(total_pop)) * n
 
-#print population
-
-network = LocationGraph()
-network.load(sys.argv[7])
-print "Dictionaries loaded."
-
-params = str(beta) + "-" + str(shape) + "-" + str(scale)
-
-reader = csv.reader(open(sys.argv[8], 'rb'), delimiter=',')
+#load transition probability matrix
+reader = csv.reader(open(sys.argv[6], 'rb'), delimiter=',')
 T =[]
 for row in reader:
     row = [(float(x) if x else 0) for x in row]
     T.append(np.array(row))
 
 T = np.array(T)
-city_list = pickle.load(open(sys.argv[9], 'rb'))
+city_list = pickle.load(open(sys.argv[7], 'rb'))
 
-matrix = open(sys.argv[10]+"_"+params+".out", 'w')
+print "Dictionaries loaded."
+
+#output file
+params = str(beta)
+matrix = open(sys.argv[8]+"_"+params+".out", 'w')
 
 countID = 0
 infected = {}
@@ -102,12 +107,7 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p, l):
-    gamma = 1
-    while gamma >= 1:
-        gamma = np.random.gamma(shape,scale) / 100.0
-
-    pop = population[city]
-    num = int(pop * gamma)
+    num = contacts[random.randint(0,len(contacts))]
     new_infected = {}
     for i in range(num):
         if infect_indiv(p):
@@ -171,29 +171,17 @@ def stateStats(time_step):
             inf[state] = 1
 
     for state in inf:
-#        out.write(state + ":" + str(inf[state]) + ",")
         index = states.index(state)
         si[index] = inf[state]
 
-#    out.write("\n")
-
     return si
-
-#results = open(sys.argv[10]+"_"+params+".out", 'w')
-#results.write("Simulation Parameters: " + str(init_n) + "-" + str(n) + "-" + params + "\n")
-
-#maps = open(sys.argv[11]+"_"+params+".out", 'w')
 
 time_step = 0
 infection_matrix = []
 
 latent = init_city("New York,NY", latent)
 while time_step < time_steps:
-#    results.write("Time step: " + str(time_step) + " -> "+str(len(infected)) + "\n")
-#    infection_matrix.append(stateStats(time_step, maps))
     infection_matrix.append(stateStats(time_step))
-#    for id in infected:
-#        results.write(str(id) + str(infected[id]) + '\n')
 
     time_step += 1
     if time_step == time_steps:
@@ -201,29 +189,10 @@ while time_step < time_steps:
     infected, latent = update_latent(infected, latent)
     infected, latent = spread(infected, latent, time_step)
 
-#results.close()
-#maps.close()
 
 for row in infection_matrix:
     matrix.write(str(row)+'\n')
 
 matrix.close()
 
-
-#width = .5
-#ind = [i for i in range(1, 10 + 1)]
-#num_infected = [10, 36, 128, 514, 2608, 14091 , 80393, 469748, 2776384,
-#        16550373]
-#
-#fig = plt.figure()
-#ax = fig.add_subplot(111)
-#
-#rect = ax.bar(ind, num_infected, width, color='b')
-#
-#ax.set_xlabel("Time")
-#ax.set_ylabel("# Infected")
-#ax.set_title("Disease Simulation over Gowalla Network")
-#ax.set_xticks([i+width for i in ind])
-#ax.set_xticklabels(ind)
-#
-#plt.savefig("out/bargraph.png")
+print "Simulation finished."

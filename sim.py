@@ -107,7 +107,7 @@ def infect_indiv(p):
     return rand <= p
 
 def infect_city(city, p, l):
-    num = contacts[random.randint(0,len(contacts))]
+    num = contacts[random.randint(0,len(contacts)-1)]
     new_infected = {}
     for i in range(num):
         if infect_indiv(p):

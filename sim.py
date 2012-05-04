@@ -90,7 +90,6 @@ def gen_latent(city, l):
 def init_city(city, l):
     frac = .0001
     num = int(frac * population[city])
-    print num
     for i in range(num):
         l.update(gen_latent(city, l))
 

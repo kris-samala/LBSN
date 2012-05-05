@@ -10,7 +10,7 @@ import sys
 
 
 #setup parameter values
-time_steps = 180
+time_steps = 18
 n = int(sys.argv[1])
 beta = float(sys.argv[2])
 max_inf = 10
@@ -70,7 +70,8 @@ print "Vectors initialized."
 
 init_city = "New York,NY"
 init_index = city_list.index(init_city)
-init_pop = int(.0001 * Vs[0,init_index])
+init_pop = int(.001 * Vs[0,init_index])
+print "Initial infected population " + str(init_pop)
 Vs[0,init_index] -= init_pop
 
 for i in range(init_pop):
@@ -119,6 +120,8 @@ while t < time_steps:
                 v[r] = v[r-1]
 
     new_infected = np.sum(new_infected, axis=0)
+
+    print "New infected " + str(np.sum(new_infected))
 
     #determine infection period for newly infected
     Vni = []

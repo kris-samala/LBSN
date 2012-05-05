@@ -10,7 +10,7 @@ import sys
 
 
 #setup parameter values
-time_steps = 18
+time_steps = 180
 n = int(sys.argv[1])
 beta = float(sys.argv[2])
 max_inf = 10

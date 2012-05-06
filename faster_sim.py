@@ -149,7 +149,10 @@ while t < time_steps:
         for r in range(v.shape[0]):
             temp = []
             for c in range(v.shape[1]):
-                temp.append( Util.det_distribute(v[r,c], T[c,:]) )
+                if v[r,c] > num_cities:
+                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
+                elif v[r,c] > 0:
+                    temp.append( Util.distribute(v[r,c], T[c,:]) )
             v[r] = np.sum(temp,axis=0)
 
     #infected move to new city
@@ -158,8 +161,10 @@ while t < time_steps:
         for r in range(v.shape[0]):
             temp = []
             for c in range(v.shape[1]):
-                if v[r,c] > 0:
+                if v[r,c] > num_cities:
                     temp.append( Util.det_distribute(v[r,c], T[c,:]) )
+                elif v[r,c] > 0:
+                    temp.append( Util.distribute(v[r,c], T[c,:]) )
             v[r] = np.sum(temp,axis=0)
 
     t += 1

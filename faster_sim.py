@@ -103,6 +103,32 @@ while t < time_steps:
             for c in range(v.shape[1]):
                 Vnl = Util.propagate(v[r,c], c, Vnl, beta, contacts, max_lat, t)
 
+    print "Mobilizing agents..."
+
+    #latents move to new city
+    for i in range(len(Vl)):
+        v = Vl[i]
+        for r in range(v.shape[0]):
+            temp = []
+            for c in range(v.shape[1]):
+                if v[r,c] > num_cities:
+                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
+                elif v[r,c] > 0:
+                    temp.append( Util.distribute(v[r,c], T[c,:]) )
+            v[r] = np.sum(temp,axis=0)
+
+    #infected move to new city
+    for i in range(len(Vi)):
+        v = Vi[i]
+        for r in range(v.shape[0]):
+            temp = []
+            for c in range(v.shape[1]):
+                if v[r,c] > num_cities:
+                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
+                elif v[r,c] > 0:
+                    temp.append( Util.distribute(v[r,c], T[c,:]) )
+            v[r] = np.sum(temp,axis=0)
+
     print "Updating compartments..."
 
     #update latent
@@ -140,32 +166,6 @@ while t < time_steps:
                 v[r] = Vni[i]
             else:
                 v[r] = v[r-1]
-
-    print "Mobilizing agents..."
-
-    #latents move to new city
-    for i in range(len(Vl)):
-        v = Vl[i]
-        for r in range(v.shape[0]):
-            temp = []
-            for c in range(v.shape[1]):
-                if v[r,c] > num_cities:
-                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
-                elif v[r,c] > 0:
-                    temp.append( Util.distribute(v[r,c], T[c,:]) )
-            v[r] = np.sum(temp,axis=0)
-
-    #infected move to new city
-    for i in range(len(Vi)):
-        v = Vi[i]
-        for r in range(v.shape[0]):
-            temp = []
-            for c in range(v.shape[1]):
-                if v[r,c] > num_cities:
-                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
-                elif v[r,c] > 0:
-                    temp.append( Util.distribute(v[r,c], T[c,:]) )
-            v[r] = np.sum(temp,axis=0)
 
     t += 1
 

@@ -78,7 +78,7 @@ def seasonal_prob(p, t):
     omega = .017
     phi = 1.87
     lamda = .55
-    return p * ((1-a)+a*math.pow(math.fabs(math.sin(omega*t+phi)),lamda))
+    return p * (a*math.pow(math.fabs(math.sin(omega*t)),lamda))
 
 def gen_latent(city, l):
     length = random.randint(1, max_lat)
@@ -88,7 +88,7 @@ def gen_latent(city, l):
     return l
 
 def init_city(city, l):
-    frac = .0001
+    frac = .001
     num = int(frac * population[city])
     for i in range(num):
         l.update(gen_latent(city, l))

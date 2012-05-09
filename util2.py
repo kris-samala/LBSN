@@ -91,5 +91,14 @@ class Util:
 
         return V
 
+    @staticmethod
+    def init_cities(v, V, city_list, state, city_choices):
+        for i in range(v):
+            r = random.choice(list(city_choices))
+            loc = r + ',' + state
+            index = city_list.index(loc)
+            V[index] += 1
+
+        return V
 
 

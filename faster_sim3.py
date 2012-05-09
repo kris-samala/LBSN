@@ -5,8 +5,10 @@ import random
 import pickle
 import csv
 import sys
+from itertools import islice
 
-#python faster_sim.py [n] [prob] contact_dist.out states.p census.p trans_prob.csv city_list.p [matrix.out]
+
+#python faster_sim3.py [n] [prob] contact_dist.out states.p census.p trans_prob.csv city_list.p [google_all] [matrix.out]
 
 
 #setup parameter values
@@ -45,12 +47,33 @@ for row in reader:
 T = np.array(T)
 city_list = pickle.load(open(sys.argv[7], 'rb'))
 num_cities = len(city_list)
+states_to_city = {}
+for c in city_list:
+    city_state = c.split(',')
+    ct = city_state[0]
+    st = city_state[1]
+    if st not in states_to_city:
+        states_to_city[st] = set()
+    cts = states_to_city[st]
+    cts.add(ct)
+
+google = csv.reader(open(sys.argv[8], 'rb'), delimiter=',')
+g_init = list(islice(google,281))[-1]
+g_init.pop(0)
+g_init = [int(x) for x in g_init]
+
+Vinit = np.zeros(num_cities)
+for v in g_init:
+    st_index = g_init.index(v)
+    state = states[st_index]
+    if state in states_to_city:
+        Vinit = Util.init_cities(v, Vinit, city_list, state, states_to_city[state])
 
 print "Dictionaries loaded."
 
 #output file
 params = str(time_steps) + '-' + str(beta)
-matrix = open(sys.argv[8]+"_"+params+".out", 'w')
+matrix = open(sys.argv[9]+"_"+params+".out", 'w')
 
 #initialize susceptible vector
 Vs = []
@@ -68,16 +91,29 @@ print "Vectors initialized."
 
 #initial infected city
 
-init_city = "New York,NY"
-init_index = city_list.index(init_city)
-init_pop = int(.001 * Vs[0,init_index])
-print "Initial infected population " + str(init_pop)
-Vs[0,init_index] -= init_pop
+#init_city = "New York,NY"
+#init_index = city_list.index(init_city)
+#init_pop = int(.001 * Vs[0,init_index])
 
-for i in range(init_pop):
-    length = random.randint(1, max_inf)
-    v = Vi[length-1]
-    v[0,init_index] += 1
+print "Initial infected population " + str(sum(g_init))
+Vs[0] -= Vinit
+
+#determine infection period for newly infected
+Vni = []
+for i in range(0, max_inf):
+    Vni.append( np.zeros(num_cities) )
+Vni = np.array(Vni)
+
+Vni = Util.determine_inf_pd(Vinit, Vni, max_inf)
+
+#update infected
+for i in range(len(Vi)):
+    Vi[i][0] = Vni[i]
+
+#for i in range(init_pop):
+#    length = random.randint(1, max_inf)
+#    v = Vi[length-1]
+#    v[0,init_index] += 1
 
 print "Initial city outbreak.. Done."
 print "Begin simulation..."
@@ -101,7 +137,14 @@ while t < time_steps:
         for r in range(v.shape[0]):
             temp = []
             for c in range(v.shape[1]):
-                Vnl = Util.propagate(v[r,c], c, Vnl, beta, contacts, max_lat, t)
+                if v[r,c] > 0:
+                    Vnl = Util.propagate(v[r,c], c, Vnl, beta, contacts, max_lat, t)
+    new_latent = 0
+    for i in range(0, max_lat):
+        Vs[0] -= Vnl[i]
+        new_latent += sum(Vnl[i])
+
+    print "New Latent " + str(new_latent)
 
     print "Mobilizing agents..."
 
@@ -111,9 +154,7 @@ while t < time_steps:
         for r in range(v.shape[0]):
             temp = []
             for c in range(v.shape[1]):
-                if v[r,c] > num_cities:
-                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
-                elif v[r,c] > 0:
+                if v[r,c] > 0:
                     temp.append( Util.distribute(v[r,c], T[c,:]) )
             v[r] = np.sum(temp,axis=0)
 
@@ -123,9 +164,7 @@ while t < time_steps:
         for r in range(v.shape[0]):
             temp = []
             for c in range(v.shape[1]):
-                if v[r,c] > num_cities:
-                    temp.append( Util.det_distribute(v[r,c], T[c,:]) )
-                elif v[r,c] > 0:
+                if v[r,c] > 0:
                     temp.append( Util.distribute(v[r,c], T[c,:]) )
             v[r] = np.sum(temp,axis=0)
 
@@ -146,6 +185,9 @@ while t < time_steps:
                 v[r] = v[r-1]
 
     new_infected = np.sum(new_infected, axis=0)
+
+    if np.sum(new_infected) > 100000:
+        sys.exit("Reached Infected # " + str(new_infected))
 
     print "New infected " + str(np.sum(new_infected))
 

@@ -66,7 +66,7 @@ class Util:
         omega = .009
         phi = 1.87
         lamda = .55
-        return p * ((1-a)+a*math.pow(math.fabs(math.sin(omega*t)),lamda))
+        return p * (a*math.pow(math.fabs(math.sin(omega*t)),lamda))
 
 
     @staticmethod

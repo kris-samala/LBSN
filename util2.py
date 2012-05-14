@@ -88,7 +88,7 @@ class Util:
             num = int(infected[i])
             if num > 0:
                 for j in range(num):
-                    pd = random.sample(inf_dist)
+                    pd = random.choice(inf_dist)
                     V[pd][i] += 1
 
         return V

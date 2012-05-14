@@ -62,10 +62,10 @@ class Util:
 
     @staticmethod
     def seasonal_prob(p, t):
-        a = .6
-        omega = .017
+        a = .4
+        omega = .009
         phi = 1.87
-        lamda = .55
+        lamda = 3
         return p * (a*math.pow(math.fabs(math.sin(omega*t)),lamda))
 
 
@@ -82,11 +82,13 @@ class Util:
 
     @staticmethod
     def determine_inf_pd(infected, V, max_inf):
+        inf_dist = [10,9,8,7,6,5,4,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1]
+
         for i in range(len(infected)):
             num = int(infected[i])
             if num > 0:
                 for j in range(num):
-                    pd = random.randint(0, max_inf-1)
+                    pd = random.sample(inf_dist)
                     V[pd][i] += 1
 
         return V

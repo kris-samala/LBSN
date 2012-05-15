@@ -186,7 +186,7 @@ while t < time_steps:
 
     new_infected = np.sum(new_infected, axis=0)
 
-    if np.sum(new_infected) > 100000:
+    if np.sum(new_infected) > 500000:
         sys.exit("Reached Infected # " + str(new_infected))
 
     print "New infected " + str(np.sum(new_infected))

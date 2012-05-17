@@ -8,7 +8,7 @@ import sys
 from itertools import islice
 
 
-#python faster_sim3.py [n] [prob] contact_dist.out states.p census.p trans_prob.csv city_list.p [google_all] [matrix.out]
+#python faster_sim3.py [n] [prob] school_contacts.p states.p census.p trans_prob.csv city_list.p [google_all] [matrix.out]
 
 
 #setup parameter values
@@ -19,11 +19,14 @@ max_inf = 10
 max_lat = 3
 
 #load contact distribution
-contacts = []
-for line in fileinput.input(sys.argv[3]):
-    line = line.rstrip(',').split(",")
-    line = [int(x) for x in line]
-    contacts.extend(line)
+#contacts = []
+#for line in fileinput.input(sys.argv[3]):
+#    line = line.rstrip(',').split(",")
+#    line = [int(x) for x in line]
+#    contacts.extend(line)
+
+contacts = pickle.load(open(sys.argv[3], 'rb'))
+print contacts
 
 states = pickle.load(open(sys.argv[4], 'rb'))
 

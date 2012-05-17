@@ -1,4 +1,4 @@
-from util2 import Util
+from util4 import Util
 import numpy as np
 import fileinput
 import random
@@ -188,7 +188,7 @@ while t < time_steps:
 
     new_infected = np.sum(new_infected, axis=0)
 
-    if np.sum(new_infected) > 500000:
+    if np.sum(new_infected) > 50000:
         sys.exit("Reached Infected # " + str(np.sum(new_infected)))
 
     print "New infected " + str(np.sum(new_infected))

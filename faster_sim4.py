@@ -60,7 +60,7 @@ for c in city_list:
     cts.add(ct)
 
 google = csv.reader(open(sys.argv[8], 'rb'), delimiter=',')
-g_init = list(islice(google,33))[-1]
+g_init = list(islice(google,281))[-1]
 g_init.pop(0)
 g_init = [(int(x) if x else 0) for x in g_init]
 

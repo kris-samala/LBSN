@@ -4,12 +4,14 @@ import pickle
 import math
 import operator
 
-#python fix_locations.py location_data.raw census.p city_coordinates.p fixed_locations.in
+#python fix_locations.py location_data.raw census.p city_coordinates.p fixed_locations.in snapped_distances.p same_city_distances.p
 
 census = pickle.load(open(sys.argv[2], 'rb'))
 city_coords = pickle.load(open(sys.argv[3], 'rb'))
 found = {}
 R = 3961
+snapped = []
+same = []
 
 def find_city(x, y):
     closest = []
@@ -25,6 +27,8 @@ def find_city(x, y):
 
     if len(sorted_closest) > 1:
         city, dist = sorted_closest[0]
+        global snapped
+        snapped.append(dist)
         return city
     else:
         return None
@@ -76,6 +80,14 @@ else:
                 err.write(location + ' ' + str(latitude) + ' ' + str(longitude) +'\n')
         else:
             out.write(l)
+            if location in city_coords:
+                x,y = city_coords[location]
+                y = -y
+                d = distance(x, y, latitude, longitude)
+                same.append(d)
 
 out.close()
 err.close()
+
+pickle.dump(snapped, open(sys.argv[5], 'wb'))
+pickle.dump(same, open(sys.argv[6], 'wb'))

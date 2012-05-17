@@ -62,7 +62,7 @@ class Util:
 
     @staticmethod
     def seasonal_prob(p, t):
-        a = .6
+        a = .4
         omega = .017
         phi = 1.87
         lamda = .55

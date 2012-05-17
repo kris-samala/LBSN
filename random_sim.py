@@ -8,7 +8,7 @@ import sys
 from itertools import islice
 
 
-#python random_sim.py [n] [prob] school_contacts.p states.p census.p trans_prob.csv city_list.p [google_all] [matrix.out]
+#python random_sim.py [n] [prob] out/school_contacts.p states.p census.p trans_prob.csv city_list.p [google_all] [matrix.out]
 
 
 #setup parameter values
@@ -19,13 +19,13 @@ max_inf = 10
 max_lat = 3
 
 #load contact distribution
-#contacts = []
-#for line in fileinput.input(sys.argv[3]):
-#    line = line.rstrip(',').split(",")
-#    line = [int(x) for x in line]
-#    contacts.extend(line)
+contacts = []
+for line in fileinput.input(sys.argv[3]):
+    line = line.rstrip(',').split(",")
+    line = [int(x) for x in line]
+    contacts.extend(line)
 
-contacts = pickle.load(open(sys.argv[3], 'rb'))
+#contacts = pickle.load(open(sys.argv[3], 'rb'))
 
 states = pickle.load(open(sys.argv[4], 'rb'))
 
@@ -62,7 +62,7 @@ for c in city_list:
     cts.add(ct)
 
 google = csv.reader(open(sys.argv[8], 'rb'), delimiter=',')
-g_init = list(islice(google,33))[-1]
+g_init = list(islice(google,281))[-1]
 g_init.pop(0)
 g_init = [(int(x) if x else 0) for x in g_init]
 
@@ -190,7 +190,7 @@ while t < time_steps:
 
     new_infected = np.sum(new_infected, axis=0)
 
-    if np.sum(new_infected) > 1000000:
+    if np.sum(new_infected) > 100000:
         sys.exit("Reached Infected # " + str(np.sum(new_infected)))
 
     print "New infected " + str(np.sum(new_infected))

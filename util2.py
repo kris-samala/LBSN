@@ -63,7 +63,7 @@ class Util:
     @staticmethod
     def seasonal_prob(p, t):
         a = .6
-        omega = .009
+        omega = .017
         phi = 1.87
         lamda = .55
         return p * (a*math.pow(math.fabs(math.sin(omega*t)),lamda))
@@ -86,7 +86,7 @@ class Util:
             num = int(infected[i])
             if num > 0:
                 for j in range(num):
-                    pd = random.randint(0,max_inf-1)
+                    pd = random.randint(0, max_inf-1)
                     V[pd][i] += 1
 
         return V

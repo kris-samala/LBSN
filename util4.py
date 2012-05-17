@@ -62,10 +62,10 @@ class Util:
 
     @staticmethod
     def seasonal_prob(p, t):
-        a = .2
-        omega = .009
+        a = .6
+        omega = .017
         phi = 1.87
-        lamda = 3
+        lamda = .55
         return p * (.1+ a*math.pow(math.fabs(math.sin(omega*t)),lamda))
 
 

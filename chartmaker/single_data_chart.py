@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import pickle
-
+import fileinput
 
 #python single_data_chart.py [xs] [xlabel] [ylabel] [min_val] [max_val] [output.png]
 #max_val = 0 for no limit on values
@@ -13,6 +13,10 @@ min_val = float(sys.argv[4])
 max_val = float(sys.argv[5])
 
 raw_xs = pickle.load(open(sys.argv[1], 'rb'))
+#raw_xs = []
+
+#for line in fileinput.input(sys.argv[1]):
+#    raw_xs.append(int(line))
 
 if max_val > 0:
     for i in range(len(raw_xs)):

@@ -2,5 +2,5 @@
 
 for i in `seq 1 52`;
 do
-  python colorize_svg.py maps/flu$i > maps/testmap$i.svg
+  python colorize_svg.py full_maps/flu$i > full_maps/testmap$i.svg
 done

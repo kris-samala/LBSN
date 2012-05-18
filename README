@@ -2,6 +2,8 @@ This project contains Python scripts for studying Location Based Social Networks
 
 Description of files:
 
+iofiles.tar : contains input files used by some scripts, and a few results
+
 run_sim.sh : executes faster_sim on grid using runCmd
     - outputs the resulting matrices in a results/ directory
 

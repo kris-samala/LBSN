@@ -4,11 +4,11 @@ import glob
 import numpy as np
 import csv
 
-#python compute_avg.py matrix$count n avg_matrix-$count
+#python compute_avg.py matrix$count n avg-matrix-$count
 
 matrices = []
 basename = sys.argv[1]
-n = int(sys.argv[2])
+n = int(sys.argv[2]) #number of matrices with the same count
 avgwriter = csv.writer(open(sys.argv[3]+'.csv', 'wb'), delimiter=',')
 normwriter = csv.writer(open(sys.argv[3]+'-norm.csv', 'wb'), delimiter=',')
 max_col = 50

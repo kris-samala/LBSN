@@ -2,6 +2,30 @@ This project contains Python scripts for studying Location Based Social Networks
 
 Description of files:
 
+run_sim.sh : executes faster_sim on grid using runCmd
+    - outputs the resulting matrices in a results/ directory
+
+faster_sim.py : modified disease simulation using vectors for disease compartments
+    - outputs [matrix$] with the incidences for each state at each time step
+      (365 timesteps x #states)
+#python faster_sim.py [n] [prob] out/school_contacts.p citydata/states.p citydata/census.p out/trans_prob.csv citydata/city_list.p [google_data/all.csv] [matrix$]
+
+util.py : contains functions used in simulation
+
+data_analysis/compare_avg.py : computes the 52-week tally for each state
+    - outputs 52-week tallies and normalized values
+#python compute_avg.py matrix$count n avg-matrix-$count
+
+data_analysis/compare_google.py : computes the euclidean distance between the
+resulting normalized matrix and all possible google matches
+    - outputs list of distances, the index corresponds to the week number from
+      the google data
+#python faster_sim.py [n] [prob] out/school_contacts.p citydata/states.p citydata/census.p out/trans_prob.csv citydata/city_list.p [google_data/all.csv] [matrix$]
+
+
+-----------------------------------------------------------------------------
+This section needs to be updated:
+
 split_data.py : parses raw gowalla data to extract desired fields
 #python split_data.py [gowalla_raw] [output]
 

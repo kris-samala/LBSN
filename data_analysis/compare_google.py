@@ -5,7 +5,7 @@ import operator
 import numpy as np
 import scipy.spatial.distance as sd
 
-#python compare_google.py [google_all] [avg-$count-norm] scores$count
+#python compare_google.py google_data/all.csv [avg-$count-norm] scores$count
 
 google = []
 matrix = []

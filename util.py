@@ -41,6 +41,13 @@ class Util:
         return dist
 
     @staticmethod
+    def det_distribute(num, prob_dist):
+        dist = num*prob_dist
+
+        return dist
+
+
+    @staticmethod
     def init_vectors(max_pd, num_cities):
         V = []
         for i in range(1,max_pd+1):
@@ -59,7 +66,7 @@ class Util:
         omega = .017
         phi = 1.87
         lamda = .55
-        return p * ((1-a)+a*math.pow(math.fabs(math.sin(omega*t+phi)),lamda))
+        return p * (a*math.pow(math.fabs(math.sin(omega*t)),lamda))
 
 
     @staticmethod
@@ -84,5 +91,14 @@ class Util:
 
         return V
 
+    @staticmethod
+    def init_cities(v, V, city_list, state, city_choices):
+        for i in range(v):
+            r = random.choice(list(city_choices))
+            loc = r + ',' + state
+            index = city_list.index(loc)
+            V[index] += 1
+
+        return V
 
 

@@ -3,6 +3,48 @@ This project contains Python scripts for studying Location Based Social Networks
 Description of files:
 
 iofiles.tar : contains input files used by some scripts, and a few results
+  * citydata/
+      - census_raw.csv = original population data
+      - census.out; census.p = dictionary city -> population
+      - city_coor.csv = original coordinates data
+      - city_coor.out; city_coordinates.p = dictionary city -> (latitude,longitude)
+      - parse_census.py = parser for population data
+      - parse_citycoor.py = parser for coordinates data
+      - states.p = dictionary state_name -> state_abbrv
+
+  * google_data/
+      - all.csv = google flu trends data 2004-2012(May)
+      - match7-365d-norm-labeled.csv = May 10, 2009 to May 2, 2010, normalized
+      - match7-norm = same as above, no date label
+
+  * out/
+      - city_list.p = list of cities
+      - coordinates.p = dictionary city -> (latitude,longitude)
+      - locations.p = dictionary city -> list of user_names
+      - school_contacts.p = list of number of contacts per day (from school
+        contacts)
+      - contact_dist.out = list of number of contacts per day (from gowalla data)
+      - trans_prob.csv = transition probability matrix
+
+  * results/
+      * gowalla/
+          - avg-11.csv = 52-week results from gowalla network
+          - avg-11-norm.csv = 52-week results, normalized
+          - avg-11-norm-labeled.csv = 52-week results with date and states labels
+          - matrix-*.out = 365-day simulation results
+          - scores11 = sorted distances for every 52-week subset against google flu
+              <results-file>-<google_flu_starting_week_number>:<distance_score>
+          - statescores-11 = state-by-state distance against google flu on
+            selected week (this is for starting week 281)
+              <state_index> <state_abbrv>:<distance_score>
+      * perm/
+          - (same naming convention as above but results for permuted transition
+            probabilities)
+      * rand/
+          - (similar files but results for randomized transition probabilities)
+          - matrix0-1-randomT.csv = randomized transition probability matrix
+
+
 
 run_sim.sh : executes faster_sim on grid using runCmd
     - outputs the resulting matrices in a results/ directory

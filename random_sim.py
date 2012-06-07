@@ -47,10 +47,12 @@ for row in reader:
     T.append(np.array(row))
 
 T = np.array(T)
-T = np.random.random_sample(T.shape)
 
 randwriter = csv.writer(open(sys.argv[9]+'-randomT.csv', 'wb'), delimiter=',')
-for row in T:
+for r in range(0, T.shape[1]):
+    row = np.random.random_sample(T.shape[0])
+    row = row / float(np.sum(row))
+    T[r] = row
     randwriter.writerow(row)
 
 city_list = pickle.load(open(sys.argv[7], 'rb'))
